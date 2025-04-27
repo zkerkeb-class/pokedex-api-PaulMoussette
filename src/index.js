@@ -1,62 +1,39 @@
 import express from "express";
 import cors from "cors";
-import fs from 'fs';
-import path from "path";
-import { fileURLToPath } from "url";
 import dotenv from "dotenv";
+import authRoutes from "./routes/auth.js";
+import pokemonRoutes from "./routes/pokemon.js";  // Ajout de l'import pour pokemon.js
+import path from 'path';  // Ajout de path pour gérer les chemins
 
 dotenv.config();
-
-// Lire le fichier JSON
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const pokemonsList = JSON.parse(fs.readFileSync(path.join(__dirname, './data/pokemons.json'), 'utf8'));
 
 const app = express();
 const PORT = 3000;
 
-// Middleware pour CORS
-app.use(cors());
+// Utilisation de import.meta.url pour définir __dirname dans un module ES
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
-// Middleware pour parser le JSON
+// Configuration CORS
+app.use(cors({
+  origin: "http://localhost:5173",
+}));
+
 app.use(express.json());
 
-// Middleware pour servir des fichiers statiques
-// 'app.use' est utilisé pour ajouter un middleware à notre application Express
-// '/assets' est le chemin virtuel où les fichiers seront accessibles
-// 'express.static' est un middleware qui sert des fichiers statiques
-// 'path.join(__dirname, '../assets')' construit le chemin absolu vers le dossier 'assets'
-app.use("/assets", express.static(path.join(__dirname, "../assets")));
+// Routes d'authentification
+app.use("/api/auth", authRoutes);
 
-// Route GET de base
-app.get("/api/pokemons", (req, res) => {
-  res.status(200).send({
-    types: [
-      "fire",
-      "water",
-      "grass",
-      "electric",
-      "ice",
-      "fighting",
-      "poison",
-      "ground",
-      "flying",
-      "psychic",
-      "bug",
-      "rock",
-      "ghost",
-      "dragon",
-      "dark",
-      "steel",
-      "fairy",
-    ],
-    pokemons: pokemonsList,
-  });
-});
+// Routes Pokémon (ajoutée)
+app.use("/api/pokemons", pokemonRoutes);
 
+// Route principale
 app.get("/", (req, res) => {
-  res.send("bienvenue sur l'API Pokémon");
+  res.send("Bienvenue sur l'API Pokémon");
 });
+
+// Servir les images statiques depuis un dossier accessible
+// Si tes images sont dans un dossier "assets/pokemons" dans ton répertoire racine du projet
+app.use("/assets", express.static(path.join(__dirname, "../assets")));  // Assure-toi que ce chemin est correct
 
 // Démarrage du serveur
 app.listen(PORT, () => {
