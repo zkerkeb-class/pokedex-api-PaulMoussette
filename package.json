@@ -10,11 +10,17 @@
     "generate-pokemons": "node src/data/generatePokemonsJson.js"
   },
   "dependencies": {
+<<<<<<< HEAD
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2"
+=======
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.18.2"
+>>>>>>> 1e3401373169a3cda34b46dc6bee90b5c8420d6f
   },
   "devDependencies": {
     "nodemon": "^2.0.22"
